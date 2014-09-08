@@ -42,23 +42,37 @@ def get_external_map_url(longitude, latitude, zoom=14):
     return HOSTED_MAPS_URL + urllib.urlencode(params)
 
 
-def geocode(api_key, address, timeout=2):
-    ''' returns (longtitude, latitude,) tuple for given address '''
+def geocode(api_key, address, timeout=2, extra=None):
+    '''
+    returns (longtitude, latitude,) tuple for given address.
+
+    Extra parameters to API may be passed as ``extra`` dict, e.g.: ``{'lang': 'pl'}``
+
+    '''
     try:
-        xml = _get_geocode_xml(api_key, address, timeout)
+        xml = _get_geocode_xml(api_key, address, timeout, extra)
         return _get_coords(xml)
     except IOError:
         return None, None
 
-def _get_geocode_xml(api_key, address, timeout=2):
-    url = _get_geocode_url(api_key, address)
+def _get_geocode_xml(api_key, address, timeout=2, extra=None):
+    url = _get_geocode_url(api_key, address, extra)
     status_code, response = http.request('GET', url, timeout=timeout)
     return response
 
-def _get_geocode_url(api_key, address):
+def _get_geocode_url(api_key, address, extra=None):
+    """
+    Get API url for ``address``.
+
+    Extra parameters to API may be passed as ``extra`` dict, e.g.: ``{'lang': 'pl'}``
+
+    """
     if isinstance(address, unicode):
-        address = address.encode('utf8')
-    params = urllib.urlencode({'geocode': address, 'key': api_key})
+        address = address.encoqueryde('utf8')
+    params = {'geocode': address, 'key': api_key}
+    if extra:
+        params.update(extra)
+    params = urllib.urlencode()
     return GEOCODE_URL + params
 
 def _get_coords(response):
