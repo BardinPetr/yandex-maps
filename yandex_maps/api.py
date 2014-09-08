@@ -72,7 +72,7 @@ def _get_geocode_url(api_key, address, extra=None):
     params = {'geocode': address, 'key': api_key}
     if extra:
         params.update(extra)
-    params = urllib.urlencode()
+    params = urllib.urlencode(params)
     return GEOCODE_URL + params
 
 def _get_coords(response):
