@@ -68,7 +68,7 @@ def _get_geocode_url(api_key, address, extra=None):
 
     """
     if isinstance(address, unicode):
-        address = address.encoqueryde('utf8')
+        address = address.encode('utf8')
     params = {'geocode': address, 'key': api_key}
     if extra:
         params.update(extra)
